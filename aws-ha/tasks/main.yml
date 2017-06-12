@@ -1,0 +1,16 @@
+---
+# tasks file for aws
+- name: install boto credentials
+  template: src=boto.j2
+            dest=/home/{{ vm_user }}/.boto
+            owner={{ vm_user }}
+            group={{ vm_user }}
+            mode=664
+  when: ansible_domain == project_local_tld
+
+- include: vpc.yml
+- include: ec2_key.yml
+- include: ec2_sg.yml
+- include: ec2_instance.yml
+- include: rds.yml
+- include: elb.yml

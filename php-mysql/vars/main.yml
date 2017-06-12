@@ -1,0 +1,3 @@
+---
+# vars file for php-mysql
+__php_mysql_package: php7.0-mysql

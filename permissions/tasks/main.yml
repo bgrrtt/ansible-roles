@@ -1,0 +1,6 @@
+---
+# tasks file for permissions
+- name: Add www-data user to {{ group }} group permissions
+  user: name=www-data
+        groups={{ group }}
+        append=yes

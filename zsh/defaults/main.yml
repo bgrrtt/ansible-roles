@@ -1,0 +1,8 @@
+---
+# defaults file for zsh
+user: vagrant
+zim_repo: "https://github.com/bgrrtt/server-dotfiles.git"
+zim_links:
+  - { src: '/home/{{ user }}/.zim/templates/zimrc', dest: '/home/{{ user }}/.zimrc' }
+  - { src: '/home/{{ user }}/.zim/templates/zlogin', dest: '/home/{{ user }}/.zlogin' }
+  - { src: '/home/{{ user }}/.zim/templates/zshrc', dest: '/home/{{ user }}/.zshrc' }

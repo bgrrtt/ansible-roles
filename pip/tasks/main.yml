@@ -1,0 +1,8 @@
+---
+# tasks file for pip
+- name: install apt packages
+  apt: name="python-pip" state="latest"
+
+- name: install pip packages
+  pip: name="{{ item.name }}" state="latest"
+  with_items: "{{ pip_pkgs }}"

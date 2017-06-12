@@ -1,0 +1,6 @@
+---
+- name: Creates an new ec2 key with Web SSH Key if not present
+  ec2_key:
+    region: "{{ vpc_region }}"
+    name: "{{ ec2_key_name }}"
+    key_material:  "{{ lookup('file',  ssh_web_key_location ) }}"

@@ -1,0 +1,10 @@
+---
+# tasks file for time
+- name: Check the Current Timezone
+  command: cat /etc/timezone
+  changed_when: false
+  register: current_timezone
+
+- name: "Set the provided Timezone to {{ timezone }} from {{ current_timezone.stdout }}"
+  command: timedatectl set-timezone {{ timezone }}
+  when: current_timezone.stdout != timezone

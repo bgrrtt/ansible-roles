@@ -1,0 +1,86 @@
+---
+################################################################################
+#
+# EC2 Instance
+#
+################################################################################
+
+# EC2 instances specific variables
+EC2_INSTANCE_TYPE: t2.nano
+EC2_VOLUME_SIZE: 10
+EC2_COUNT: 1
+EC2_SUBNET_ID:
+  - "{{ PUBLIC_SUBNET_1 }}"
+  - "{{ PUBLIC_SUBNET_2 }}"
+EC2_SECURITY_GROUP_NAME:
+  - "{{ VPC_NAME }}-{{ SSH_SG_NAME }}"
+  - "{{ VPC_NAME }}-{{ WEB_SG_NAME }}"
+
+################################################################################
+#
+# EC2 Key
+#
+################################################################################
+
+# EC2 Key Settings
+EC2_KEY_NAME: "{{ VPC_NAME }}-key"
+
+################################################################################
+#
+# EC2 SGS
+#
+################################################################################
+
+# EC2 Security Groups specific variables
+WEB_SG_NAME: "webserver-sg"
+DATABASE_SG_NAME: "rds-sg"
+SSH_SG_NAME: "ssh-sg"
+ELB_SG_NAME: "elb-sg"
+
+# Security Groups
+EC2_SECURITY_GROUPS: "{{ SSH_SG + WEB_SG + DATABASE_SG + ELB_SG }}"
+
+# Secrity Groups info(Name, Description and Rules) for SSH, Web, RDS and ELB
+SSH_SG:
+  - name: "{{ VPC_NAME }}-{{ SSH_SG_NAME }}"
+    description: "This sg is for remote access to instances inside {{ VPC_NAME }} VPC"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+
+WEB_SG:
+  - name: "{{ VPC_NAME }}-{{ WEB_SG_NAME }}"
+    description: "This sg is for web instances inside {{ VPC_NAME }} VPC"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+
+DATABASE_SG:
+  - name: "{{ VPC_NAME }}-{{ DATABASE_SG_NAME }}"
+    description: "This sg is for rds instances inside {{ VPC_NAME }} VPC"
+    rules:
+      - proto: tcp
+        from_port: 3306
+        to_port: 3306
+        group_name: "{{ VPC_NAME }}-{{ WEB_SG_NAME }}"
+
+ELB_SG:
+  - name: "{{ VPC_NAME }}-{{ ELB_SG_NAME }}"
+    description: "This sg is for ELB inside {{ VPC_NAME }} VPC"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0

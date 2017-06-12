@@ -1,0 +1,197 @@
+---
+# defaults file for aws
+################################################################################
+#
+# VPC
+#
+################################################################################
+
+# Variables that can provide as extra vars
+VPC_NAME: test
+VPC_REGION: us-east-1 # N.Virginia
+VPC_CIDR: "172.25.0.0/16"
+VPC_CLASS_DEFAULT: "172.25"
+
+# Variables for VPC
+vpc_name: "{{ VPC_NAME }}"
+vpc_region: "{{ VPC_REGION }}"
+vpc_cidr_block: "{{ VPC_CIDR }}"
+public_cidr_1: "{{ VPC_CLASS_DEFAULT }}.10.0/24"
+public_az_1: "{{ vpc_region }}a"
+public_cidr_2: "{{ VPC_CLASS_DEFAULT }}.20.0/24"
+public_az_2: "{{ vpc_region }}c"
+private_cidr_1: "{{ VPC_CLASS_DEFAULT }}.30.0/24"
+private_az_1: "{{ vpc_region }}a"
+private_cidr_2: "{{ VPC_CLASS_DEFAULT }}.40.0/24"
+private_az_2: "{{ vpc_region }}c"
+
+# Please don't change the variables below, until you know what you are doing
+#
+# Subnets Defination for VPC
+vpc_subnets:
+  - cidr: "{{ public_cidr_1 }}" # Public Subnet-1
+    az: "{{ public_az_1 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ public_az_1 }}-public_subnet-1", "Type":"Public", "Alias":"Public_Subnet_1" }
+  - cidr: "{{ public_cidr_2 }}" # Public Subnet-2
+    az: "{{ public_az_2 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ public_az_2 }}-public-subnet-2", "Type":"Public", "Alias":"Public_Subnet_2" }
+  - cidr: "{{ private_cidr_1 }}" # Private Subnet-1
+    az: "{{ private_az_1 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ private_az_1 }}-private-subnet-1", "Type":"Private", "Alias":"Private_Subnet_1" }
+  - cidr: "{{ private_cidr_2 }}" # Private Subnet-2
+    az: "{{ private_az_2 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ private_az_2 }}-private-subnet-2", "Type":"Private", "Alias":"Private_Subnet_2" }
+
+
+################################################################################
+#
+# EC2 Key
+#
+################################################################################
+
+# Variables that can provide as extra vars
+EC2_KEY_NAME: "{{ vpc_name }}-web-key"
+
+# Use inside the tasks
+ec2_key_name: "{{ EC2_KEY_NAME }}"
+
+################################################################################
+#
+# EC2 SG
+#
+################################################################################
+
+# Variables that can provide as extra vars
+ENVIRONMENT: "test"
+EC2_SECURITY_GROUPS:
+  - name: test-sg
+    description: "This sg is just a test sg"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+
+# Use inside the tasks
+Environment: "{{ ENVIRONMENT }}"
+ec2_security_groups: "{{ EC2_SECURITY_GROUPS }}"
+
+################################################################################
+#
+# EC2 Instance
+#
+################################################################################
+
+# Variables that can provide as extra vars
+EC2_INSTANCE_TYPE: t2.micro
+EC2_SECURITY_GROUP_NAME: "test"
+EC2_VOLUME_SIZE: 10
+EC2_COUNT: 1
+EC2_SUBNET_ID: []
+
+# Use inside the tasks
+ec2_instance_type: "{{ EC2_INSTANCE_TYPE }}"
+ec2_security_group_name: "{{ EC2_SECURITY_GROUP_NAME }}"
+ec2_volume_size: "{{ EC2_VOLUME_SIZE }}"
+ec2_count: "{{ EC2_COUNT }}"
+ec2_subnet_id: "{{ EC2_SUBNET_ID }}"
+
+# Please don't change the variables below, until you know what you are doing
+# Only Ubuntu distribution is supported
+
+AMI_NAME: "ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"
+AMI_OWNER: "099720109477"
+
+ami_name: "{{ AMI_NAME }}"
+ami_owner: "{{ AMI_OWNER }}"
+
+################################################################################
+#
+# RDS
+#
+################################################################################
+
+# Variables that can provide as extra vars
+RDS_SUBNET_GROUP_NAME: "my_test_subnet_group"
+RDS_SG_DESCRIPTION: "My Subnet Group for wordpress rds instance"
+RDS_SG_SUBNETS: []
+RDS_MULTI_ZONE_OPTION: no
+RDS_SG_NAME: "test_rd_sg"
+RDS_INSTANCE_NAME: "my-test-rds"
+RDS_DB_ENGINE: MySQL
+RDS_DB_ENGINE_VERSION: 5.6.27
+RDS_DB_SIZE: 5
+RDS_DB_NAME: "rds_test"
+RDS_INSTANCE_TYPE: "db.t2.micro"
+RDS_DB_USERNAME: admin
+RDS_DB_PASSWORD: test
+RDS_BACKUP_RETENTION_PERIOD: 0
+RDS_PUBLICLY_ACCESSIBLE: yes
+RDS_WAIT_TIMEOUT: 300
+
+# Use inside the tasks
+rds_subnet_group_name: "{{ RDS_SUBNET_GROUP_NAME }}"
+rds_sg_description: "{{ RDS_SG_DESCRIPTION }}"
+rds_sg_subnets: "{{ RDS_SG_SUBNETS }}"
+rds_multi_zone_option: "{{ RDS_MULTI_ZONE_OPTION }}"
+rds_sg_name: "{{ RDS_SG_NAME }}"
+rds_instance_name: "{{ RDS_INSTANCE_NAME }}"
+rds_db_engine: "{{ RDS_DB_ENGINE }}"
+rds_db_engine_version: "{{ RDS_DB_ENGINE_VERSION }}"
+rds_db_size: "{{ RDS_DB_SIZE }}"
+rds_db_name: "{{ RDS_DB_NAME }}"
+rds_instance_type: "{{ RDS_INSTANCE_TYPE }}"
+rds_db_username: "{{ RDS_DB_USERNAME }}"
+rds_db_password: "{{ RDS_DB_PASSWORD }}"
+rds_backup_retention_period: "{{ RDS_BACKUP_RETENTION_PERIOD }}"
+rds_publicly_accessible: "{{ RDS_PUBLICLY_ACCESSIBLE }}"
+rds_wait_timeout: "{{ RDS_WAIT_TIMEOUT }}"
+
+################################################################################
+#
+# ELB
+#
+################################################################################
+
+# Variables that can provide as extra vars
+
+ELB_NAME: "test"
+ELB_SUBNET_ID: []
+ELB_PURGE_SUBNETS: no
+ELB_CROSS_AZ_LOAD_BALANCING: yes
+ELB_PING_PROTOCOL: tcp
+ELB_PING_PORT: 80
+ELB_RESPONSE_TIMEOUT: 5
+ELB_INTERVAL: 30
+ELB_UNHEALTHY_THRESHOLD: 2
+ELB_HEALTHY_THRESHOLD: 10
+ELB_CONNECTION_DRAINING_TIMEOUT: 60
+ELB_SECURITY_GROUP_NAME: "test"
+ELB_STICKINESS_TYPE: "loadbalancer"
+ELB_STICKINESS_ENABLED: no
+ELB_STICKINESS_EXPIRATION: 150
+ELB_LISTENERS:
+  - protocol: http
+    load_balancer_port: 80
+    instance_protocol: http
+    instance_port: 80
+
+# Use inside the tasks
+elb_name: "{{ ELB_NAME }}"
+elb_subnet_id: "{{ ELB_SUBNET_ID }}"
+elb_purge_subnets: "{{ ELB_PURGE_SUBNETS }}"
+elb_cross_az_load_balancing: "{{ ELB_CROSS_AZ_LOAD_BALANCING }}"
+elb_connection_draining_timeout: "{{ ELB_CONNECTION_DRAINING_TIMEOUT }}"
+elb_security_group_name: "{{ ELB_SECURITY_GROUP_NAME }}"
+elb_listeners: "{{ ELB_LISTENERS }}"
+elb_stickiness:
+  type: "{{ ELB_STICKINESS_TYPE }}"
+  enabled: "{{ ELB_STICKINESS_ENABLED }}"
+  expiration: "{{ ELB_STICKINESS_EXPIRATION }}"
+elb_health_check:
+  ping_protocol: "{{ ELB_PING_PROTOCOL }}"
+  ping_port: "{{ ELB_PING_PORT }}"
+  response_timeout: "{{ ELB_RESPONSE_TIMEOUT }}"
+  interval: "{{ ELB_INTERVAL }}"
+  unhealthy_threshold: "{{ ELB_UNHEALTHY_THRESHOLD }}"
+  healthy_threshold: "{{ ELB_HEALTHY_THRESHOLD }}"

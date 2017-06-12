@@ -1,0 +1,19 @@
+---
+# tasks file for zsh
+- block:
+  - name: install zim from repo
+    git: repo={{ zim_repo }} dest=/home/{{ user }}/.zim
+    become: false
+
+  - name: symlink from ~/.zim
+    file:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+      state: link
+    with_items: '{{ zim_links }}'
+    become: false
+
+  - name: switch {{ user }}'s shell to zsh
+    user: name="{{ user }}" shell=/usr/bin/zsh
+    become: true
+  when: ansible_connection == "local"

@@ -1,0 +1,24 @@
+---
+# defaults file for apt
+apt_repos:
+  - { name: "ppa:ondrej/php" }
+
+apt_pkgs:
+  - { name: aptitude }
+  - { name: build-essential }
+  - { name: gcc }
+  - { name: git }
+  - { name: jpegoptim }
+  - { name: libmysqlclient-dev }
+  - { name: ntp }
+  - { name: optipng }
+  - { name: python-apt }
+  - { name: python-dev }
+  - { name: python-mysqldb }
+  - { name: python-pip }
+  - { name: python-pycurl }
+  - { name: python-setuptools }
+  - { name: tree }
+  - { name: unattended-upgrades }
+  - { name: whois }
+  - { name: zsh }

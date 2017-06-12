@@ -1,0 +1,42 @@
+---
+- include_vars: "../secret_vars/aws/elb.yml"
+- include_vars: "../secret_vars/aws/ssl.yml"
+- name: Ensure load balancer exists
+  ec2_elb_lb:
+    name: "{{ elb_name }}"
+    security_group_names: "{{ elb_security_group_name }}"
+    state: present
+    region: "{{ vpc_region }}"
+    subnets: "{{ elb_subnet_id }}"
+    purge_subnets: "{{ elb_purge_subnets }}"
+    cross_az_load_balancing: "{{ elb_cross_az_load_balancing }}"
+    connection_draining_timeout: "{{ elb_connection_draining_timeout }}"
+    listeners: "{{ elb_listeners }}"
+    stickiness: "{{ elb_stickiness }}"
+    health_check: "{{ elb_health_check }}"
+  register: elb
+
+- name: Adding EC2 instance(s) to the ELB
+  ec2_elb:
+    region: "{{ vpc_region }}"
+    ec2_elbs: "{{ elb_name }}"
+    instance_id: "{{ item }}"
+    wait: no
+    state: present
+  with_items: "{{ instances_id_list }}"
+  changed_when: false
+  when: not(instances_id_list is undefined or instances_id_list is none or instances_id_list | trim == '')
+
+- name: "Create elb.yml file inside the secret_vars/aws directory"
+  lineinfile:
+    dest: "../secret_vars/aws/elb.yml"
+    line: "---"
+    create: yes
+
+- name: "Write ELB url to elb.yml file inside the secret_vars/aws directory"
+  lineinfile:
+    dest: "../secret_vars/aws/elb.yml"
+    regexp: "^ELB_URL"
+    line: "ELB_URL: {{ '\"' + elb.elb.dns_name + '\"' }}"
+
+- include_vars: "../secret_vars/aws/elb.yml"

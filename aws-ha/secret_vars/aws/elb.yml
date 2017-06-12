@@ -1,0 +1,41 @@
+---
+################################################################################
+#
+# ELB
+#
+################################################################################
+ELB_URL: ""
+################################################################################
+#
+# ELB
+#
+################################################################################
+
+# Elastic Load Balancer specific variables
+ELB_NAME: "{{ PROJECT }}-{{ ENVIRONMENT }}-{{ SERVER_ROLE }}-elb"
+ELB_SUBNET_ID:
+  - "{{ PUBLIC_SUBNET_1 }}"
+  - "{{ PUBLIC_SUBNET_2 }}"
+ELB_PURGE_SUBNETS: yes
+ELB_CROSS_AZ_LOAD_BALANCING: yes
+ELB_PING_PROTOCOL: tcp
+ELB_PING_PORT: 80
+ELB_RESPONSE_TIMEOUT: 5
+ELB_INTERVAL: 30
+ELB_UNHEALTHY_THRESHOLD: 5
+ELB_HEALTHY_THRESHOLD: 5
+ELB_CONNECTION_DRAINING_TIMEOUT: 60
+ELB_SECURITY_GROUP_NAME: "{{ VPC_NAME }}-{{ ELB_SG_NAME }}"
+ELB_STICKINESS_TYPE: "loadbalancer"
+ELB_STICKINESS_ENABLED: yes
+ELB_STICKINESS_EXPIRATION: 300
+ELB_LISTENERS:
+  - protocol: http
+    load_balancer_port: 80
+    instance_protocol: http
+    instance_port: 80
+  - protocol: https
+    load_balancer_port: 443
+    instance_protocol: http
+    instance_port: 80
+    ssl_certificate_id: "{{ SSL_CERT_ID }}"

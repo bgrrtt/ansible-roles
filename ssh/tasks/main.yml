@@ -1,0 +1,63 @@
+---
+# tasks file for ssh
+- block:
+  # Web Keys
+  - name: Set the Web Public Key location as fact
+    set_fact:
+      ssh_web_key_location: "/home/{{ user }}/.ssh/id_rsa.pub"
+
+  - name: Set the Web Private Key location as fact
+    set_fact:
+      ssh_web_private_key_location: "/home/{{ user }}/.ssh/id_rsa"
+
+  - name: "Check that the Web SSH Key exists for {{ user }} user"
+    stat:
+      path: "{{ ssh_web_key_location }}"
+    register: sshkey_web_result
+
+  - name: "Generating a new Web SSH key for {{ user }} user if it does not exists already"
+    user:
+      name: "{{ user }}"
+      generate_ssh_key: yes
+      ssh_key_bits: 4096
+      ssh_key_file: .ssh/id_rsa
+    when: sshkey_web_result.stat.exists == False
+
+  - name: Document Web Private SSH key in secret_vars/keys
+    copy: src={{ ssh_web_private_key_location }} dest=/ops/secret_vars/keys/web.pem owner={{ user }} group={{ user }} mode=0644
+    when: sshkey_web_result.stat.exists == False
+
+  - name: Document Web Public SSH Key in secret_vars/keys
+    copy: src={{ ssh_web_key_location }} dest=/ops/secret_vars/keys/web.pub owner={{ user }} group={{ user }} mode=0644
+    when: sshkey_web_result.stat.exists == False
+
+  # Deploy Keys
+  - name: Set the Deploy Public Key location as fact
+    set_fact:
+      ssh_deploy_key_location: "/home/{{ user }}/.ssh/deploy.pub"
+
+  - name: Set the Deploy Private Key location as fact
+    set_fact:
+      ssh_deploy_private_key_location: "/home/{{ user }}/.ssh/deploy"
+
+  - name: "Check that the Deploy SSH Key exists for {{ user }} user"
+    stat:
+      path: "{{ ssh_deploy_key_location }}"
+    register: sshkey_deploy_result
+
+  - name: "Generating a new Deploy SSH key for {{ user }} user if it does not exists already"
+    user:
+      name: "{{ user }}"
+      generate_ssh_key: yes
+      ssh_key_bits: 4096
+      ssh_key_file: .ssh/deploy
+    when: sshkey_deploy_result.stat.exists == False
+
+  - name: Document Deploy Private SSH key in secret_vars/keys
+    copy: src={{ ssh_deploy_private_key_location }} dest=/ops/secret_vars/keys/deploy.pem owner={{ user }} group={{ user }} mode=0644
+    when: sshkey_deploy_result.stat.exists == False
+
+  - name: Document Deploy Public SSH Key in secret_vars/keys
+    copy: src={{ ssh_deploy_key_location }} dest=/ops/secret_vars/keys/deploy.pub owner={{ user }} group={{ user }} mode=0644
+    when: sshkey_deploy_result.stat.exists == False
+  when: ansible_connection == "local"

@@ -1,0 +1,6 @@
+{
+    "name": "bgrrtt/ansible-roles",
+    "description": "My Collection of Ansible roles.",
+    "authors": [ { "name": "Branden Garrett", "email": "branden.garrett@gmail.com" }],
+    "type": "library"
+}
