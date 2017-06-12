@@ -12,3 +12,8 @@
     name: nginx
     state: absent
   when: nginx_ppa_added.changed
+
+- name: Install nginx if the PPA was just added.
+  apt:
+    name: nginx
+    state: latest

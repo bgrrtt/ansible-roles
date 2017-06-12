@@ -1,6 +1,11 @@
 ---
 # tasks file for ssh
 - block:
+  - name: Ensure db_dumps folder
+    file:
+      path: /ops/secret_vars/keys
+      state: directory
+
   # Web Keys
   - name: Set the Web Public Key location as fact
     set_fact:
