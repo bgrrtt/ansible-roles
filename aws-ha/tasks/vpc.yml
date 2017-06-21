@@ -1,5 +1,6 @@
 ---
-- include_vars: "../secret_vars/aws/vpc.yml"
+- include_vars: "/ops/secret_vars/aws/vpc.yml"
+
 - name: Creating an AWS VPC inside mentioned Region
   ec2_vpc:
     region: "{{ vpc_region }}"
@@ -9,6 +10,31 @@
     subnets: "{{ vpc_subnets }}"
     internet_gateway: yes
   register: vpc
+
+
+# NEW
+# - ec2_vpc_net:
+#     name: "{{ vpc_name }}-vpc"
+#     region: "{{ vpc_region }}"
+#     state: present
+#     cidr_block: "{{ vpc_cidr_block }}"
+#     tags:
+#       Environment: "{{ ENVIRONMENT }}"
+#   register: vpc
+#
+# - ec2_vpc_igw:
+#     vpc_id: "{{ vpc.vpc_id }}"
+#     state: present
+#
+# - name: Create subnets
+#   ec2_vpc_subnet:
+#     state: present
+#     vpc_id: "{{ vpc.vpc_id }}"
+#     cidr: "{{ item.cidr }}"
+#     az: "{{ item.az }}"
+#     resource_tags: "{{ item.resource_tags }}"
+#   with_items: "{{ vpc_subnets }}"
+
 
 - name: Tag the Internet Gateway
   ec2_tag:
@@ -35,13 +61,13 @@
 
 - name: "Create secret_vars/aws/vpc.yml"
   lineinfile:
-    dest: "../secret_vars/aws/vpc.yml"
+    dest: "/ops/secret_vars/aws/vpc.yml"
     line: "---"
     create: yes
 
 - name: "Write vpc info to secret_vars/aws/vpc.yml"
   lineinfile:
-    dest: "../secret_vars/aws/vpc.yml"
+    dest: "/ops/secret_vars/aws/vpc.yml"
     regexp: "^{{ item.regexp | upper }}"
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
@@ -51,8 +77,9 @@
 
 - name: "Write public and private subnets ids to secret_vars/aws/vpc.yml"
   lineinfile:
-    dest: "../secret_vars/aws/vpc.yml"
+    dest: "/ops/secret_vars/aws/vpc.yml"
     regexp: "^{{ item.resource_tags.Alias | upper }}"
     line: "{{ item.resource_tags.Alias | upper }}: {{ '\"' + item.id + '\"' }}"
   with_items: "{{ vpc.subnets }}"
-- include_vars: "../secret_vars/aws/vpc.yml"
+
+- include_vars: "/ops/secret_vars/aws/vpc.yml"

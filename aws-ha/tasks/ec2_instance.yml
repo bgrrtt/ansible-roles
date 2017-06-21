@@ -1,5 +1,5 @@
 ---
-- name: Search for the latest Ubuntu 14.04 AMI
+- name: Search for the latest {{ ami_name }} AMI
   ec2_ami_find:
     region: "{{ vpc_region }}"
     name: "{{ ami_name }}"
@@ -42,9 +42,9 @@
 - set_fact:
     instances_id_list: "{{ ec2.results | get_ec2_info('id') }}"
 
-- name: Add the newly created EC2 instance(s) to the local host group (located at ../hosts)
+- name: Add the newly created EC2 instance(s) to the local host group (located at /ops/hosts)
   lineinfile:
-    dest: "../hosts"
+    dest: "/ops/hosts"
     regexp: "{{ item }}"
     insertafter: "[production]"
     line: "{{ item }} ansible_connection=ssh ansible_host={{ item }} ansible_user=ubuntu"

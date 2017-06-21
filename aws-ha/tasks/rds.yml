@@ -1,5 +1,6 @@
 ---
-- include_vars: "../secret_vars/aws/rds.yml"
+- include_vars: "/ops/secret_vars/aws/rds.yml"
+
 - name: Create RDS Subnet Group
   rds_subnet_group:
     region: "{{ vpc_region }}"
@@ -57,14 +58,14 @@
 #
 - name: "Create rds.yml file inside the secret_vars/aws directory"
   lineinfile:
-    dest: "../secret_vars/aws/rds.yml"
+    dest: "/ops/secret_vars/aws/rds.yml"
     line: "---"
     create: yes
 
 - name: "Write RDS endpoint to rds.yml file inside the secret_vars/aws directory"
   lineinfile:
-    dest: "../secret_vars/aws/rds.yml"
+    dest: "/ops/secret_vars/aws/rds.yml"
     regexp: "^RDS_DB_ENDPOINT"
     line: "RDS_DB_ENDPOINT: {{ '\"' + rds.instance.endpoint + '\"' }}"
 
-- include_vars: "../secret_vars/aws/rds.yml"
+- include_vars: "/ops/secret_vars/aws/rds.yml"

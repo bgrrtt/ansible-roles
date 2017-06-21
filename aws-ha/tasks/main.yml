@@ -12,5 +12,5 @@
 - include: ec2_key.yml
 - include: ec2_sg.yml
 - include: ec2_instance.yml
-- include: rds.yml
 - include: elb.yml
+- include: rds.yml

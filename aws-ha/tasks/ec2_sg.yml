@@ -1,5 +1,5 @@
 ---
-- include_vars: "../secret_vars/aws/vpc.yml"
+- include_vars: "/ops/secret_vars/aws/vpc.yml"
 - name: Creating an EC2 Security Group inside the Mentioned VPC
   ec2_group:
     name: "{{ item.name }}"

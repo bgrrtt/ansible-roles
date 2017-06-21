@@ -1,6 +1,7 @@
 ---
-- include_vars: "../secret_vars/aws/elb.yml"
-- include_vars: "../secret_vars/aws/ssl.yml"
+- include_vars: "/ops/secret_vars/aws/ssl.yml"
+- include_vars: "/ops/secret_vars/aws/elb.yml"
+
 - name: Ensure load balancer exists
   ec2_elb_lb:
     name: "{{ elb_name }}"
@@ -29,14 +30,14 @@
 
 - name: "Create elb.yml file inside the secret_vars/aws directory"
   lineinfile:
-    dest: "../secret_vars/aws/elb.yml"
+    dest: "/ops/secret_vars/aws/elb.yml"
     line: "---"
     create: yes
 
 - name: "Write ELB url to elb.yml file inside the secret_vars/aws directory"
   lineinfile:
-    dest: "../secret_vars/aws/elb.yml"
+    dest: "/ops/secret_vars/aws/elb.yml"
     regexp: "^ELB_URL"
     line: "ELB_URL: {{ '\"' + elb.elb.dns_name + '\"' }}"
 
-- include_vars: "../secret_vars/aws/elb.yml"
+- include_vars: "/ops/secret_vars/aws/elb.yml"
